@@ -498,32 +498,8 @@ directory, the file name, and its state (modified, read-only or non-existent)."
 
 (doom-modeline-def-segment major-mode
   "The major mode, including environment and text-scale info."
-  (propertize
-   (concat
-    (doom-modeline-spc)
-    (propertize (format-mode-line
-                 (or (and (boundp 'delighted-modes)
-                          (cadr (assq major-mode delighted-modes)))
-                     mode-name))
-                'help-echo "Major mode\n\
-mouse-1: Display major mode menu\n\
-mouse-2: Show help for major mode\n\
-mouse-3: Toggle minor modes"
-                'mouse-face 'mode-line-highlight
-                'local-map mode-line-major-mode-keymap)
-    (when (and doom-modeline-env-version doom-modeline-env--version)
-      (format " %s" doom-modeline-env--version))
-    (and (boundp 'text-scale-mode-amount)
-         (/= text-scale-mode-amount 0)
-         (format
-          (if (> text-scale-mode-amount 0)
-              " (%+d)"
-            " (%-d)")
-          text-scale-mode-amount))
-    (doom-modeline-spc))
-   'face (if (doom-modeline--active)
-             'doom-modeline-buffer-major-mode
-           'mode-line-inactive)))
+  (when (featurep 'projectile)
+    (ignore-errors (projectile-project-name))))
 
 
 ;;
@@ -1407,11 +1383,7 @@ By default, this shows the information specified by `global-mode-string'."
 See `column-number-indicator-zero-based'.")
 
 (defvar doom-modeline-percent-position
-  (if (boundp 'mode-line-percent-position)
-      mode-line-percent-position
-    '(-3 "%p"))
-  "Specification of \"percentage offset\" of window through buffer.
-See `mode-line-percent-position'.")
+  "")
 
 (when (>= emacs-major-version 26)
   (add-variable-watcher
